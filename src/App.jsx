@@ -1,44 +1,55 @@
+import { useState } from 'react'
 import './App.css'
+import Player from './Player.jsx'
 
 function App() {
-  // código js
-  // ahora está vacío
-  // y en el return el código html, 1 solo elemento "padre"
+  // definimos nuestras variables de estado de la app
+  const [score, setScore] = useState([8, 17])
+  const [currentScore, setCurrentScore] = useState(0)
+  const [activePlayer, setActivePlayer] = useState(0)
+  const [dice, setDice] = useState(0)
+
+  const handleNewGame = () => console.log('New game')
+  const handleRollDice = () => {
+    // obtener un número aleatorio entre 1 y 6
+    const diceNumber = Math.trunc(Math.random() * 6) + 1
+    setDice(diceNumber)
+    setCurrentScore(currentScore + diceNumber)
+  }
+  function handleHold() {
+    console.log('Hold')
+  }
+
   return (
     <main>
-      <section className="player player--0 player--active">
-        <h2 className="name" id="name--0">
-          Player 1
-        </h2>
-        <p className="score" id="score--0">
-          43
-        </p>
-        <div className="current">
-          <p className="current-label">Current</p>
-          <p className="current-score" id="current--0">
-            2
-          </p>
-        </div>
-      </section>
-      <section className="player player--1">
-        <h2 className="name" id="name--1">
-          Player 2
-        </h2>
-        <p className="score" id="score--1">
-          24
-        </p>
-        <div className="current">
-          <p className="current-label">Current</p>
-          <p className="current-score" id="current--1">
-            1
-          </p>
-        </div>
-      </section>
-
-      <img src="/imagenes/dice-5.png" alt="Playing dice" className="dice" />
-      <button className="btn btn--new">🔄 New game</button>
-      <button className="btn btn--roll">🎲 Roll dice</button>
-      <button className="btn btn--hold">📥 Hold</button>
+      <Player
+        name="Player 1"
+        score={score[0]}
+        currentScore={activePlayer === 0 && currentScore}
+        isActive={activePlayer === 0}
+      />
+      <Player
+        name="Player 2"
+        score={score[1]}
+        currentScore={activePlayer === 1 && currentScore}
+        isActive={activePlayer === 1}
+      />
+      {dice && (
+        <img
+          src={`/imagenes/dice-${dice}.png`}
+          alt="Playing dice"
+          className="dice"
+        />
+      )}
+      <button className="btn btn--new" onClick={handleNewGame}>
+        🔄 New game
+      </button>
+      <button className="btn btn--roll" onClick={handleRollDice}>
+        🎲 Roll dice
+      </button>
+      <button className="btn btn--hold" onClick={handleHold}>
+        📥 Hold
+      </button>
     </main>
   )
 }
