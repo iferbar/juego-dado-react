@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import './App.css';
+import dice1 from './imagenes/dice-1.png';
+import dice2 from './imagenes/dice-2.png';
+import dice3 from './imagenes/dice-3.png';
+import dice4 from './imagenes/dice-4.png';
+import dice5 from './imagenes/dice-5.png';
+import dice6 from './imagenes/dice-6.png';
 import Player from './Player.jsx';
+import { WINNER_SCORE } from './constanst.jsx';
 
 function App() {
   // definimos nuestras variables de estado de la app
@@ -9,11 +16,25 @@ function App() {
   const [activePlayer, setActivePlayer] = useState(0);
   const [dice, setDice] = useState(0);
 
-  const handleNewGame = () => console.log('New game');
+  const dados = [null, dice1, dice2, dice3, dice4, dice5, dice6];
+
+  const handleNewGame = () => {
+    setScore([0, 0]);
+    setCurrentScore(0);
+    setActivePlayer(0);
+    setDice(0);
+  };
   const handleRollDice = () => {
     // obtener un número aleatorio entre 1 y 6
     const diceNumber = Math.trunc(Math.random() * 6) + 1;
     setDice(diceNumber);
+    //si el número es 1, resetar el current score y cambiamos de jugador
+    if (diceNumber === 1) {
+      setCurrentScore(0);
+      setActivePlayer(activePlayer === 0 ? 1 : 0);
+      return;
+    }
+    //si el número no es 1, actualizar el current score
     setCurrentScore(currentScore + diceNumber);
   };
   function handleHold() {
@@ -41,20 +62,22 @@ function App() {
         currentScore={activePlayer === 1 && currentScore}
         isActive={activePlayer === 1}
       />
-      {dice && (
-        <img
-          src={`/imagenes/dice-${dice}.png`}
-          alt="Playing dice"
-          className="dice"
-        />
-      )}
+      {dice && <img src={dados[dice]} alt="Playing dice" className="dice" />}
       <button className="btn btn--new" onClick={handleNewGame}>
         🔄 New game
       </button>
-      <button className="btn btn--roll" onClick={handleRollDice}>
+      <button
+        className="btn btn--roll"
+        onClick={handleRollDice}
+        disabled={score[0] >= WINNER_SCORE || score[1] >= WINNER_SCORE}
+      >
         🎲 Roll dice
       </button>
-      <button className="btn btn--hold" onClick={handleHold}>
+      <button
+        className="btn btn--hold"
+        onClick={handleHold}
+        disabled={score[0] >= WINNER_SCORE || score[1] >= WINNER_SCORE}
+      >
         📥 Hold
       </button>
     </main>
